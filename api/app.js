@@ -5,18 +5,24 @@ var cookieParser = require('cookie-parser');
 let {PythonShell} = require('python-shell')
 var logger = require('morgan');
 var cors = require('cors');
-var querystring = require('querystring');
 
+/*
 var pythonRouter = require('./routes/python');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var testAPIRouter = require("./routes/testAPI");
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use("/testAPI", testAPIRouter);
+app.use("/pythonAPI", pythonRouter)
+ */
 
 var app = express();
 
 // view engine setup
+
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 app.use(cors());
 app.use(logger('dev'));
@@ -25,11 +31,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use("/testAPI", testAPIRouter);
-app.use("/pythonAPI", pythonRouter)
+app.get('/', (req, res) => {
+  res.render("index")
+});
 
 app.get('/plants', (req, res) => {
   var state = req.query.state;
@@ -37,8 +41,6 @@ app.get('/plants', (req, res) => {
   var protein = req.query.protein;
   var duration = req.query.duration;
   var symbol = req.query.symbol;
-
-  console.log(invasive)
 
   var options = {
     mode: 'text',
@@ -52,16 +54,12 @@ app.get('/plants', (req, res) => {
     res.json(results)
   });
 
-
 });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
-
-
-
 
 // error handler
 app.use(function(err, req, res, next) {
@@ -71,7 +69,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.send(err);
 });
 
 module.exports = app;

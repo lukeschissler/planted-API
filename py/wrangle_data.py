@@ -2,18 +2,21 @@ import pandas
 import os
 import sys
 
-os.chdir('/Users/lukeschissler/documents/Github/node_react/py')
+os.chdir('/Users/lukeschissler/documents/Github/planted_api/py')
 
 plant_df = pandas.read_csv("plant-data.csv")
 
 state = sys.argv[1]
 invasive = sys.argv[2]
 protein = sys.argv[3]
+duration = sys.argv[4]
+symbol = sys.argv[5]
 
 """
 state='undefined'
 invasive='undefined'
-protein='High'
+protein='undefined'
+duration='undefined'
 """
 
 def filter_by_state(df, state):
@@ -36,10 +39,16 @@ def filter_by_BNS(df):
     notna_df = df.loc[df["Berry/Nut/Seed Product"].notna()]
     return notna_df.loc[notna_df["Berry/Nut/Seed Product"] == 'Yes']
 
+def filter_by_duration(df, duration):
+    return df.loc[df['Duration'].str.contains(duration, na=False)]
+
+def filter_by_symbol(df, symbol):
+    return df.loc[df['Accepted Symbol'] == symbol]
+
 def to_JSON(df):
     return df.to_json(orient="records")
 
-if invasive == '1':
+if invasive != 'undefined':
     plant_df = filter_by_invasive(plant_df)
 
 if state != 'undefined':
@@ -47,5 +56,12 @@ if state != 'undefined':
 
 if protein != 'undefined':
     plant_df = filter_by_protein(plant_df, protein)
+
+if duration != 'undefined':
+    plant_df = filter_by_duration(plant_df, duration)
+
+if symbol != 'undefined':
+    plant_df = filter_by_symbol(plant_df, symbol)
+
 
 print(to_JSON(plant_df.head()))

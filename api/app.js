@@ -35,6 +35,8 @@ app.get('/plants', (req, res) => {
   var state = req.query.state;
   var invasive = req.query.invasive;
   var protein = req.query.protein;
+  var duration = req.query.duration;
+  var symbol = req.query.symbol;
 
   console.log(invasive)
 
@@ -42,7 +44,7 @@ app.get('/plants', (req, res) => {
     mode: 'text',
     pythonPath: '/anaconda3/bin/python',
     scriptPath: '../py/',
-    args: [state, invasive, protein]
+    args: [state, invasive, protein, duration, symbol]
   };
 
   PythonShell.run('wrangle_data.py', options, function (err, results ) {
